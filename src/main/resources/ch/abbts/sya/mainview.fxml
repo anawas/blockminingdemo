@@ -42,10 +42,7 @@
             <TextField fx:id="blockNumberField" text="1" GridPane.columnIndex="1" />
             <TextField fx:id="nonceField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextArea fx:id="dataField" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="hashField" GridPane.columnIndex="1" GridPane.rowIndex="3">
-               <font>
-                  <Font name="Courier New" size="13.0" />
-               </font></TextField>
+            <TextField fx:id="hashField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <children>
                   <Spinner fx:id="difficultySpinner">

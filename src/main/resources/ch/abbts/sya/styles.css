@@ -13,7 +13,8 @@
     -fx-font-size: 12pt;
 }
 
-.text-field {
+
+.text-field, .text-area {
     -fx-font-size: 12pt;
     -fx-font-family: "Courier";
 }
