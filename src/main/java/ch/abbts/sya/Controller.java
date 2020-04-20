@@ -1,5 +1,8 @@
 package ch.abbts.sya;
 
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +18,7 @@ import static javafx.scene.control.ProgressIndicator.INDETERMINATE_PROGRESS;
 
 public class Controller implements Initializable {
 
+
     @FXML
     public TextField blockNumberField;
     @FXML
@@ -29,27 +33,34 @@ public class Controller implements Initializable {
     public Spinner difficultySpinner;
     public ProgressIndicator progressIndicator;
 
-    Miner miner = new Miner();
+    //Miner miner = new Miner();
 
     public void miningButtonPressed(ActionEvent actionEvent) {
         miningButton.setDisable(true);
         progressIndicator.setVisible(true);
         progressIndicator.setProgress(INDETERMINATE_PROGRESS);
-        miner.setDifficulty(Integer.parseInt(difficultySpinner.getValue().toString()));
 
-        String hash = "";
+        Task<String> aTask = createTask();
+        new Thread(aTask).start();
 
-        try {
-            hash = miner.mineHash(assembleStringToHash());
-            hashField.setText(hash);
-            nonceField.setText(miner.getNonce().toString());
-        } catch (NoSuchAlgorithmException e) {
-            nonceField.setText("-1");
-            e.printStackTrace();
-        } finally {
+        aTask.setOnSucceeded(e -> {
+            progressIndicator.setVisible(false);
             miningButton.setDisable(false);
-            progressIndicator.setProgress(0.0);
-        }
+            String response = e.getSource().getValue().toString();
+            String[] tokens = response.split(",");
+
+            if (tokens[0].isEmpty()) {
+                hashField.setText("FEHLER");
+            } else {
+                hashField.setText(tokens[0]);
+            }
+
+            if (tokens[1].isEmpty()) {
+                nonceField.setText("-1");
+            } else {
+                nonceField.setText(tokens[1]);
+            }
+        });
 
     }
 
@@ -58,6 +69,29 @@ public class Controller implements Initializable {
         message += dataField.getText();
         return message;
     }
+
+    private Task<String>createTask() {
+
+        final Task<String> task = new Task<String>() {
+            Miner miner = new Miner();
+            String hash = "";
+            String nonce = "";
+
+            @Override
+            protected String call() {
+                miner.setDifficulty(Integer.parseInt(difficultySpinner.getValue().toString()));
+                try {
+                    hash = miner.mineHash(assembleStringToHash());
+                    nonce = miner.getNonce().toString();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+                return hash+","+nonce;
+            }
+        };
+        return task;
+    }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
