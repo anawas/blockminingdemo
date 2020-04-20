@@ -1,0 +1,35 @@
+
+#titlePane {
+    -fx-background-color: #5d99c6;
+}
+
+
+#titleLabel {
+    -fx-font-size: 24pt;
+    -fx-text-fill: white;
+}
+
+.label, .spinner {
+    -fx-font-size: 12pt;
+}
+
+.text-field {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Courier";
+}
+
+.button {
+    -fx-font-size: 12pt;
+    -fx-background-color: #009688;
+    -fx-font-weight: bold;
+}
+
+.button:disabled, .button:default:disabled {
+    -fx-opacity: 0.4;
+    -fx-background-color: #1d1d1d;
+    -fx-text-fill: white;
+}
+
+.vbox {
+    -fx-background-color: #000000;
+}
