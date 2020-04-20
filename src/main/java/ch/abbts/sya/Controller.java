@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import jdk.nashorn.internal.ir.ReturnNode;
 import sun.security.provider.ConfigFile;
 
 import java.net.URL;
@@ -40,26 +41,15 @@ public class Controller implements Initializable {
         progressIndicator.setVisible(true);
         progressIndicator.setProgress(INDETERMINATE_PROGRESS);
 
-        Task<String> aTask = createTask();
+        Task<ReturnValues> aTask = createTask();
         new Thread(aTask).start();
 
         aTask.setOnSucceeded(e -> {
             progressIndicator.setVisible(false);
             miningButton.setDisable(false);
-            String response = e.getSource().getValue().toString();
-            String[] tokens = response.split(",");
-
-            if (tokens[0].isEmpty()) {
-                hashField.setText("FEHLER");
-            } else {
-                hashField.setText(tokens[0]);
-            }
-
-            if (tokens[1].isEmpty()) {
-                nonceField.setText("-1");
-            } else {
-                nonceField.setText(tokens[1]);
-            }
+            ReturnValues response = (ReturnValues)e.getSource().getValue();
+            hashField.setText(response.getHash());
+            nonceField.setText(response.getNonce());
         });
 
     }
@@ -70,15 +60,15 @@ public class Controller implements Initializable {
         return message;
     }
 
-    private Task<String>createTask() {
+    private Task<ReturnValues>createTask() {
 
-        final Task<String> task = new Task<String>() {
+        final Task<ReturnValues> task = new Task<ReturnValues>() {
             Miner miner = new Miner();
             String hash = "";
             String nonce = "";
 
             @Override
-            protected String call() {
+            protected ReturnValues call() {
                 miner.setDifficulty(Integer.parseInt(difficultySpinner.getValue().toString()));
                 try {
                     hash = miner.mineHash(assembleStringToHash());
@@ -86,7 +76,10 @@ public class Controller implements Initializable {
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
-                return hash+","+nonce;
+                ReturnValues retrn = new ReturnValues();
+                retrn.setHash(hash);
+                retrn.setNonce(nonce);
+                return retrn;
             }
         };
         return task;
