@@ -23,7 +23,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("mainview.fxml"));
         primaryStage.setResizable(false);
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Blockchain Mining Demo");
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         primaryStage.setScene(scene);
